@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import { useContext } from "react";
 // import { getPerson } from "../../firebase/firebase-database";
 import { initializeApp } from 'firebase/app';
-import {getFirestore, getDocs, collection} from "firebase/firestore"
+import {getFirestore, getDocs, collection, setDoc, doc} from "firebase/firestore"
 
 
 import { useState, useEffect } from "react";
@@ -30,7 +30,20 @@ const Personer = () => {
         const personerList = personerSnapshot.docs.map(doc => doc.data());
         return personerList
       }
-      
+
+      const writePerson = async (fornavn, etternavn, telefon) => {
+        const newPersonDoc = doc(db, "personer", fornavn)
+        await setDoc(newPersonDoc, {
+          Fornavn: fornavn,
+          Etternavn: etternavn,
+          Telefon: telefon,
+        })
+        getPerson().then((value) => {
+    
+            setPersoner(value);
+
+        });
+      }
       
 
     const [personer, setPersoner] = useState({});
@@ -41,12 +54,17 @@ const Personer = () => {
             setPersoner(value);
 
         });
-    
-    
     },[])
 
     console.log(personer)
 
+    const OnClickLagre = (fornavn, etternavn, telefon) => {
+        fornavn = document.getElementById("fornavn_inp").value;
+        etternavn = document.getElementById("etternavn_inp").value;
+        telefon = document.getElementById("telefon_inp").value;
+
+        return writePerson(fornavn, etternavn, telefon);
+    }
 
     return (
         <Fragment>
@@ -63,7 +81,10 @@ const Personer = () => {
             </div>
         )
     })}
-
+        <input id="fornavn_inp" type="text" />
+        <input id="etternavn_inp" type="text" />
+        <input id="telefon_inp" type="text" />
+        <button onClick={OnClickLagre}>Lagre</button>
         </Fragment>
     )
 }

@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import {getFirestore, getDocs, collection} from "firebase/firestore"
+import {getFirestore, getDocs, collection, setDoc} from "firebase/firestore"
 
 const firebaseConfig = {
   apiKey: "AIzaSyDJbENZ34dag2v_oLrM6TWO0jt7ugCI7t4",
@@ -22,5 +22,12 @@ export const getPerson = async () => {
   return personerList
 }
 
-
+const writePerson = async (fornavn, etternavn, telefon) => {
+  const personCollection = collection(db, "personer")
+  await setDoc(personCollection, {
+    Fornavn: fornavn,
+    Etternavn: etternavn,
+    Telefon: telefon,
+  })
+}
 
